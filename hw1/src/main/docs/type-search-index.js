@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ru.gb.regular.model","l":"Animal"},{"p":"ru.gb.regular.model","l":"Barn"},{"p":"ru.gb.regular.model","l":"Cat"},{"p":"ru.gb.regular.model","l":"Cow"},{"p":"ru.gb.regular","l":"Decorator"},{"p":"ru.gb.regular.model","l":"Dog"},{"p":"ru.gb.regular.model","l":"Horse"},{"p":"ru.gb.sample","l":"Main"}]
