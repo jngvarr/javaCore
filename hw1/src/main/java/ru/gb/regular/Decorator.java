@@ -14,12 +14,12 @@ public class Decorator {
      * @param animal животное, что-то говорящее
      * @return Отформатированная строка.
      */
-    public static void decorate(Animal animal) {
+    public static String decorate(Animal animal) {
         /*
          * Метод создает строку, на основе вида животного,
          * добавляя строку результата выполнения метода voice()
          * */
-        System.out.println("The " + animal.getClass().getSimpleName() + " says: "+ animal.voice());
+        return "The " + animal.getClass().getSimpleName() + " says: "+ animal.voice();
     }
 
 }

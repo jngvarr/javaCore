@@ -16,7 +16,7 @@ public class Main {
         Barn.animals.add(new Cow());
         Barn.animals.add(new Horse());
         for (Animal animal : Barn.animals) {
-            Decorator.decorate(animal);
+            System.out.println(Decorator.decorate(animal));
         }
 
     }

@@ -10,14 +10,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07161a77-aa2c-418e-8cdf-aec602c4babb" name="Changes" comment="Merge branch 'main' of https://github.com/jngvarr/java into HEAD&#10;&#10;# Conflicts:&#10;#&#9;ToyShop/Toystore/Main.java&#10;#&#9;ToyShop/Toystore/Model.java&#10;#&#9;ToyShop/Toystore/Store.java">
-      <change afterPath="$PROJECT_DIR$/.gitinore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/читайменя.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gb/regular/Decorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gb/regular/Decorator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gb/regular/model/Animal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gb/regular/model/Animal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/gb/sample/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/gb/sample/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/Decorator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Animal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Barn.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Cat.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Cow.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Dog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/regular/model/Horse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ru/gb/sample/Main.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -57,11 +70,11 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Jngvarr/gb/java/javaCore/hw1",
+    "last_opened_file_path": "C:/Users/jngva/gb/java/javaCore/hw1",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
   }
 }]]></component>
   <component name="RunManager">
