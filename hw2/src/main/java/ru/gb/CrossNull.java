@@ -1,48 +1,89 @@
 package ru.gb;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class CrossNull {
+    private static int winCount; // Выигрышная комбинация
 
     public static final char HUMAN_SIGN = 'X';
     public static final char AI_SIGN = '0';
-    public static final char EMPTY_POLE = '0';
+    public static final char EMPTY_POLE = '+';
     public static char[][] field;
-    private static int fieldSizeX;
     private static int fieldSizeY;
+    private static int fieldSizeX;
     private static final Scanner sc = new Scanner(System.in);
     private static final Random rnd = new Random();
 
 
     public static void main(String[] args) {
-        initialize();
-        printField();
+        field = new char[3][];
+
+        while (true) {
+            fieldSizeChoice();
+            initialize();
+            printField();
+            while (true) {
+                humanTurn();
+                printField();
+                if (checkGameState(HUMAN_SIGN, "Вы победили!"))
+                    break;
+                aiTurn();
+                printField();
+                if (checkGameState(AI_SIGN, "Победил компьютер!"))
+                    break;
+            }
+            System.out.print("Желаете сыграть еще раз? (Y - да): ");
+            if (!sc.next().equalsIgnoreCase("Y"))
+                break;
+        }
+    }
+
+//    fieldSizeChoice();
+//        initialize();
+//        printField();
+//    }
+
+    public static void fieldSizeChoice() {
+        do {
+            System.out.print("Введите размер поля по горизонтали (значение от 3 до 5): \n> ");
+            fieldSizeX = Integer.parseInt(sc.nextLine());
+        } while (fieldSizeX < 3 || fieldSizeX > 5);
+        do {
+            System.out.print("Введите размер поля по вертикали (значение от 3 до 5): \n> ");
+            fieldSizeY = Integer.parseInt(sc.nextLine());
+        } while (fieldSizeY < 3 || fieldSizeY > 5);
+    }
+
+    public static void winCountDetermine() {
+        if (Math.min(fieldSizeY, fieldSizeX) == 3) {
+            winCount = 3;
+        } else winCount = 4;
     }
 
     private static void initialize() {
-        System.out.println("Введите размер поля по горизонтали: \n>");
-        fieldSizeX = 5;
-        fieldSizeY = 5;
-        field = new char[fieldSizeX][fieldSizeY];
-        for (int x = 0; x < fieldSizeX; x++) {
-            for (int y = 0; y < fieldSizeY; y++) {
+        field = new char[fieldSizeY][fieldSizeX];
+        for (int x = 0; x < fieldSizeY; x++) {
+            for (int y = 0; y < fieldSizeX; y++) {
                 field[x][y] = EMPTY_POLE;
             }
         }
-
+        winCountDetermine();
     }
 
+
     private static void printField() {
-        System.out.print(" ");
-        for (int x = 0; x < fieldSizeX * 2 + 1; x++) {
-            System.out.print((x % 2 == 0) ? "-" : x / 2 + 1);
+        System.out.print("+");
+        for (int y = 0; y < fieldSizeX * 2 + 1; y++) {
+            System.out.print((y % 2 == 0) ? "-" : y / 2 + 1);
         }
         System.out.println();
 
-        for (int x = 0; x < fieldSizeX; x++) {
+        for (int x = 0; x < fieldSizeY; x++) {
             System.out.print(x + 1 + "|");
-            for (int y = 0; y < fieldSizeY; y++) {
+            for (int y = 0; y < fieldSizeX; y++) {
                 System.out.print(field[x][y] + "|");
             }
             System.out.println();
@@ -107,7 +148,7 @@ public class CrossNull {
      * @return
      */
     private static boolean isCellValid(int x, int y) {
-        return x >= 0 && x < fieldSizeX && y >= 0 && y < fieldSizeY;
+        return x >= 0 && x < fieldSizeY && y >= 0 && y < fieldSizeX;
     }
 
     /**
@@ -117,8 +158,8 @@ public class CrossNull {
         int x, y;
 
         do {
-            x = rnd.nextInt(fieldSizeX);
-            y = rnd.nextInt(fieldSizeY);
+            x = rnd.nextInt(fieldSizeY);
+            y = rnd.nextInt(fieldSizeX);
         }
         while (!isCellEmpty(x, y));
         field[x][y] = AI_SIGN;
@@ -151,37 +192,49 @@ public class CrossNull {
      * @return
      */
     private static boolean checkWin(char c) {
-        for (int i = 0; i < fieldSizeX; i++) {
-            for (int j = 0; j < fieldSizeY; j++) {
+        int check1 = 0;
+        boolean check2 = true;
+        boolean check3 = true;
+        boolean check4 = true;
 
+        ArrayList<Boolean> checks = new ArrayList<>();
+        boolean checkDestination = true;
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+
+                if (field[i][j] == c) {
+
+
+                    for (int k = 0; k < winCount; k++) {
+                        if (field[i][j] + winCount >= fieldSizeX) {
+                            if (field[i + k][j] == c) {
+                                check1++;
+                            }
+                            checks.add(check1 == winCount);
+                        }
+
+                        if (field[i][j + k] == c) {
+                        } else check2 = false;
+                        checks.add(check2);
+                        if (field[i + k][j + k] == c) {
+                        } else check3 = false;
+                        checks.add(check3);
+                        if (field[i + k][j - k] == c) {
+                        } else check4 = false;
+                        checks.add(check4);
+                    }
+                }
             }
         }
-        // Проверка по трем горизонталям
-        if (field[0][0] == c && field[0][1] == c && field[0][2] == c) return true;
-        if (field[1][0] == c && field[1][1] == c && field[1][2] == c) return true;
-        if (field[2][0] == c && field[2][1] == c && field[2][2] == c) return true;
-
-        // Проверка по трем вертикалям
-        if (field[0][0] == c && field[1][0] == c && field[2][0] == c) return true;
-        if (field[0][1] == c && field[1][1] == c && field[2][1] == c) return true;
-        if (field[0][2] == c && field[1][2] == c && field[2][2] == c) return true;
-
-        // Проверка по диагоналям
-        if (field[0][0] == c && field[1][1] == c && field[2][2] == c) return true;
-        if (field[0][2] == c && field[1][1] == c && field[2][0] == c) return true;
-
-        return false;
+        return checks.contains(true);
     }
 
     private static boolean checkWinV2(char c) {
 
-
-        for (int x = 0; x < fieldSizeX; x++) {
-            for (int y = 0; y < fieldSizeY; y++) {
-
+        for (int x = 0; x < fieldSizeY; x++) {
+            for (int y = 0; y < fieldSizeX; y++) {
             }
         }
-
         return false;
     }
 
@@ -195,8 +248,8 @@ public class CrossNull {
      * @return
      */
     private static boolean checkDraw() {
-        for (int x = 0; x < fieldSizeX; x++) {
-            for (int y = 0; y < fieldSizeY; y++) {
+        for (int x = 0; x < fieldSizeY; x++) {
+            for (int y = 0; y < fieldSizeX; y++) {
                 if (isCellEmpty(x, y)) return false;
             }
         }
