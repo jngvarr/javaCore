@@ -1,7 +1,6 @@
 package ru.gb;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -41,11 +40,6 @@ public class CrossNull {
         }
     }
 
-//    fieldSizeChoice();
-//        initialize();
-//        printField();
-//    }
-
     public static void fieldSizeChoice() {
         do {
             System.out.print("Введите размер поля по горизонтали (значение от 3 до 5): \n> ");
@@ -64,9 +58,9 @@ public class CrossNull {
     }
 
     private static void initialize() {
-        field = new char[fieldSizeY][fieldSizeX];
-        for (int x = 0; x < fieldSizeY; x++) {
-            for (int y = 0; y < fieldSizeX; y++) {
+        field = new char[fieldSizeX][fieldSizeY];
+        for (int x = 0; x < fieldSizeX; x++) {
+            for (int y = 0; y < fieldSizeY; y++) {
                 field[x][y] = EMPTY_POLE;
             }
         }
@@ -81,9 +75,9 @@ public class CrossNull {
         }
         System.out.println();
 
-        for (int x = 0; x < fieldSizeY; x++) {
-            System.out.print(x + 1 + "|");
-            for (int y = 0; y < fieldSizeX; y++) {
+        for (int y = 0; y < fieldSizeY; y++) {
+            System.out.print(y + 1 + "|");
+            for (int x = 0; x< fieldSizeX; x++) {
                 System.out.print(field[x][y] + "|");
             }
             System.out.println();
@@ -125,7 +119,7 @@ public class CrossNull {
             }
         }
         while (!isCellValid(x, y) || !isCellEmpty(x, y));
-        field[x][y] = AI_SIGN;
+        field[x][y] = HUMAN_SIGN;
     }
 
     /**
@@ -158,8 +152,8 @@ public class CrossNull {
         int x, y;
 
         do {
-            x = rnd.nextInt(fieldSizeY);
-            y = rnd.nextInt(fieldSizeX);
+            x = rnd.nextInt(fieldSizeX);
+            y = rnd.nextInt(fieldSizeY);
         }
         while (!isCellEmpty(x, y));
         field[x][y] = AI_SIGN;
@@ -192,41 +186,56 @@ public class CrossNull {
      * @return
      */
     private static boolean checkWin(char c) {
-        int check1 = 0;
-        boolean check2 = true;
-        boolean check3 = true;
-        boolean check4 = true;
-
         ArrayList<Boolean> checks = new ArrayList<>();
-        boolean checkDestination = true;
-        for (int i = 0; i < fieldSizeY; i++) {
-            for (int j = 0; j < fieldSizeX; j++) {
+        for (int i = 0; i < fieldSizeX; i++) {
+            for (int j = 0; j < fieldSizeY; j++) {
 
                 if (field[i][j] == c) {
-
-
-                    for (int k = 0; k < winCount; k++) {
-                        if (field[i][j] + winCount >= fieldSizeX) {
-                            if (field[i + k][j] == c) {
-                                check1++;
-                            }
-                            checks.add(check1 == winCount);
-                        }
-
-                        if (field[i][j + k] == c) {
-                        } else check2 = false;
-                        checks.add(check2);
-                        if (field[i + k][j + k] == c) {
-                        } else check3 = false;
-                        checks.add(check3);
-                        if (field[i + k][j - k] == c) {
-                        } else check4 = false;
-                        checks.add(check4);
+                    if (i + winCount <= fieldSizeX) {
+                        checks.add(straightCheck(i, j, c, true));
+                    }
+                    if (j + winCount <= fieldSizeY) {
+                        checks.add(straightCheck(i, j, c, false));
+                    }
+                    if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
+                        checks.add(diagonalCheck(i, j, c, true));
+                    }
+                    if (i + winCount <= fieldSizeX && j >=winCount) {
+                        checks.add(diagonalCheck(i, j, c, false));
                     }
                 }
+
             }
         }
         return checks.contains(true);
+    }
+
+    public static boolean straightCheck(int i, int j, char c, boolean destination) {
+        int check = 0;
+        for (int k = 0; k < winCount; k++) {
+            if (field[i][j] == c) {
+                check++;
+                int i1 = destination ? i++ : j++;
+            }
+        }
+        return check == winCount;
+    }
+
+    public static boolean diagonalCheck(int i, int j, char c, boolean destination) {
+        int check = 0;
+        for (int k = 0; k < winCount; k++) {
+            if (field[i][j] == c) {
+                check++;
+                if (destination) {
+                    i++;
+                    j++;
+                } else {
+                    i++;
+                    j--;
+                }
+            }
+        }
+        return check == winCount;
     }
 
     private static boolean checkWinV2(char c) {
