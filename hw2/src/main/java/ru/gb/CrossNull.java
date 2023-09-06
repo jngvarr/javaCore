@@ -1,5 +1,7 @@
 package ru.gb;
 
+import com.mysql.cj.conf.ConnectionUrlParser;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,8 +15,12 @@ public class CrossNull {
     public static char[][] field;
     private static int fieldSizeY;
     private static int fieldSizeX;
+    private static boolean sAITurn = false;
+
     private static final Scanner sc = new Scanner(System.in);
     private static final Random rnd = new Random();
+    private static ArrayList<IntPair> dots = new ArrayList<>();
+
 
 
     public static void main(String[] args) {
@@ -27,12 +33,12 @@ public class CrossNull {
             while (true) {
                 humanTurn();
                 printField();
-                if (checkGameState(HUMAN_SIGN, "Вы победили!"))
-                    break;
+                if (checkGameState(HUMAN_SIGN, "Вы победили!")
+                break;
                 aiTurn();
                 printField();
-                if (checkGameState(AI_SIGN, "Победил компьютер!"))
-                    break;
+                if (checkGameState(AI_SIGN, "Победил компьютер!")
+                break;
             }
             System.out.print("Желаете сыграть еще раз? (Y - да): ");
             if (!sc.next().equalsIgnoreCase("Y"))
@@ -40,10 +46,19 @@ public class CrossNull {
         }
     }
 
+
     public static void fieldSizeChoice() {
         do {
             System.out.print("Введите размер поля по горизонтали (значение от 3 до 5): \n> ");
-            fieldSizeX = Integer.parseInt(sc.nextLine());
+            if (sc.hasNextInt()) { // если кто-то смотрит код, здесь было так же как и с координатой У, но \n застревал и повторно игра не запускалась, не смог победить по другому
+                fieldSizeX = sc.nextInt();
+                sc.nextLine();
+                break;
+            } else {
+                System.out.println("Некорректное число, повторите попытку ввода.");
+                sc.nextLine();
+            }
+
         } while (fieldSizeX < 3 || fieldSizeX > 5);
         do {
             System.out.print("Введите размер поля по вертикали (значение от 3 до 5): \n> ");
@@ -77,7 +92,7 @@ public class CrossNull {
 
         for (int y = 0; y < fieldSizeY; y++) {
             System.out.print(y + 1 + "|");
-            for (int x = 0; x< fieldSizeX; x++) {
+            for (int x = 0; x < fieldSizeX; x++) {
                 System.out.print(field[x][y] + "|");
             }
             System.out.println();
@@ -91,7 +106,7 @@ public class CrossNull {
 
     private static void humanTurn() {
         int x, y;
-
+        // sAITurn = false;
         do {
 
             while (true) {
@@ -200,33 +215,61 @@ public class CrossNull {
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
                         checks.add(diagonalCheck(i, j, c, true));
                     }
-                    if (i + winCount <= fieldSizeX && j >=winCount) {
+                    if (i + winCount <= fieldSizeX && j >= winCount) {
                         checks.add(diagonalCheck(i, j, c, false));
                     }
                 }
-
             }
         }
         return checks.contains(true);
     }
 
-    public static boolean straightCheck(int i, int j, char c, boolean destination) {
-        int check = 0;
-        for (int k = 0; k < winCount; k++) {
-            if (field[i][j] == c) {
-                check++;
-                int i1 = destination ? i++ : j++;
-            }
-        }
-        return check == winCount;
+    public void superAITurn() {
+        sAITurn = true;
+        checkWin(HUMAN_SIGN);
+        sAITurn = false;
+
     }
 
-    public static boolean diagonalCheck(int i, int j, char c, boolean destination) {
+    /**
+     * Проверка выйгрышной комбинации по горизонтали и вертикали
+     *
+     * @param i
+     * @param j
+     * @param c
+     * @param straightDestination = true - горизонталь, false - вертикаль
+     * @return
+     */
+    public static boolean straightCheck(int i, int j, char c, boolean straightDestination) {
+        int wins = sAITurn ? winCount / 2 : winCount;
+        int check = 0;
+        for (int k = 0; k < wins; k++) {
+            if (field[i][j] == c) {
+                dots.add(new IntPair(i,j));
+                check++;
+                int i1 = straightDestination ? i++ : j++;
+            }
+        }
+        return check == wins;
+    }
+
+    /**
+     * Проверка выйгрышной комбинации по диагоналям
+     *
+     * @param i
+     * @param j
+     * @param c
+     * @param straightDestination - true - левый верх - правый низ, false - левый низ - правый верх
+     * @return
+     */
+    public static boolean diagonalCheck(int i, int j, char c, boolean straightDestination) {
+        int wins = sAITurn ? winCount / 2 : winCount;
         int check = 0;
         for (int k = 0; k < winCount; k++) {
             if (field[i][j] == c) {
+                dots.add(new IntPair(i,j));
                 check++;
-                if (destination) {
+                if (straightDestination) {
                     i++;
                     j++;
                 } else {
@@ -236,19 +279,6 @@ public class CrossNull {
             }
         }
         return check == winCount;
-    }
-
-    private static boolean checkWinV2(char c) {
-
-        for (int x = 0; x < fieldSizeY; x++) {
-            for (int y = 0; y < fieldSizeX; y++) {
-            }
-        }
-        return false;
-    }
-
-    static boolean check1(int x, int y, int win) {
-        return false;
     }
 
     /**
