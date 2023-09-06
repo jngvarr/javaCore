@@ -1,7 +1,5 @@
 package ru.gb;
 
-import com.mysql.cj.conf.ConnectionUrlParser;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -20,7 +18,8 @@ public class CrossNull {
     private static final Scanner sc = new Scanner(System.in);
     private static final Random rnd = new Random();
     private static ArrayList<IntPair> dots = new ArrayList<>();
-
+    private static int superAIhasMove = 0;
+    private static boolean firstAITurn;
 
 
     public static void main(String[] args) {
@@ -33,12 +32,13 @@ public class CrossNull {
             while (true) {
                 humanTurn();
                 printField();
-                if (checkGameState(HUMAN_SIGN, "Вы победили!")
-                break;
-                aiTurn();
+                if (checkGameState(HUMAN_SIGN, "Вы победили!"))
+                    break;
+                superAITurn();
+//                aiTurn();
                 printField();
-                if (checkGameState(AI_SIGN, "Победил компьютер!")
-                break;
+                if (checkGameState(AI_SIGN, "Победил компьютер!"))
+                    break;
             }
             System.out.print("Желаете сыграть еще раз? (Y - да): ");
             if (!sc.next().equalsIgnoreCase("Y"))
@@ -53,12 +53,11 @@ public class CrossNull {
             if (sc.hasNextInt()) { // если кто-то смотрит код, здесь было так же как и с координатой У, но \n застревал и повторно игра не запускалась, не смог победить по другому
                 fieldSizeX = sc.nextInt();
                 sc.nextLine();
-                break;
+//                break;
             } else {
                 System.out.println("Некорректное число, повторите попытку ввода.");
                 sc.nextLine();
             }
-
         } while (fieldSizeX < 3 || fieldSizeX > 5);
         do {
             System.out.print("Введите размер поля по вертикали (значение от 3 до 5): \n> ");
@@ -73,6 +72,7 @@ public class CrossNull {
     }
 
     private static void initialize() {
+        firstAITurn = true;
         field = new char[fieldSizeX][fieldSizeY];
         for (int x = 0; x < fieldSizeX; x++) {
             for (int y = 0; y < fieldSizeY; y++) {
@@ -221,14 +221,61 @@ public class CrossNull {
                 }
             }
         }
+        dots.clear();
         return checks.contains(true);
     }
 
-    public void superAITurn() {
-        sAITurn = true;
-        checkWin(HUMAN_SIGN);
-        sAITurn = false;
+    private static void tryToBlock(char c) {
+        for (int i = 0; i < fieldSizeX; i++) {
+            for (int j = 0; j < fieldSizeY; j++) {
 
+                if (field[i][j] == c) {
+                    if (i + winCount <= fieldSizeX) {
+                        if (straightCheck(i, j, c, true)) {
+                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y)) {
+                                field[dots.get(0).x + dots.size()][dots.get(0).y] = AI_SIGN;
+                            }
+                            superAIhasMove++;
+                        } else dots.clear();
+
+                    }
+                    if (j + winCount <= fieldSizeY) {
+                        if ((straightCheck(i, j, c, false))) {
+                            if (isCellEmpty(dots.get(0).x, dots.get(0).y + dots.size())) {
+                                field[dots.get(0).x][dots.get(0).y + dots.size()] = AI_SIGN;
+                            }
+                            superAIhasMove++;
+                        } else dots.clear();
+                    }
+                    if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
+                        if ((diagonalCheck(i, j, c, true))) {
+                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y + dots.size())) {
+                                field[dots.get(0).x + dots.size()][dots.get(0).y + dots.size()] = AI_SIGN;
+                            }
+                            superAIhasMove++;
+                        } else dots.clear();
+                    }
+                    if (i + winCount <= fieldSizeX && j >= winCount) {
+                        if ((diagonalCheck(i, j, c, false))) {
+                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y - dots.size())) {
+                                field[dots.get(0).x + dots.size()][dots.get(0).y - dots.size()] = AI_SIGN;
+                            }
+                            superAIhasMove++;
+                        } else dots.clear();
+                    }
+                }
+            }
+        }
+    }
+
+    public static void superAITurn() {
+        sAITurn = true;
+        tryToBlock(HUMAN_SIGN);
+        sAITurn = false;
+        if (superAIhasMove == 4 || firstAITurn) {
+            aiTurn();
+            firstAITurn = false;
+        }
     }
 
     /**
@@ -245,7 +292,7 @@ public class CrossNull {
         int check = 0;
         for (int k = 0; k < wins; k++) {
             if (field[i][j] == c) {
-                dots.add(new IntPair(i,j));
+                dots.add(new IntPair(i, j));
                 check++;
                 int i1 = straightDestination ? i++ : j++;
             }
@@ -267,7 +314,7 @@ public class CrossNull {
         int check = 0;
         for (int k = 0; k < winCount; k++) {
             if (field[i][j] == c) {
-                dots.add(new IntPair(i,j));
+                dots.add(new IntPair(i, j));
                 check++;
                 if (straightDestination) {
                     i++;
