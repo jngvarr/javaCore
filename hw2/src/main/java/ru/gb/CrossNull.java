@@ -183,7 +183,7 @@ public class CrossNull {
      * @return
      */
     private static boolean checkGameState(char c, String s) {
-        if (checkWin(c)) {
+        if (signCount(c, winCount)) {
             System.out.println(s);
             return true;
         }
@@ -201,23 +201,23 @@ public class CrossNull {
      * @param c
      * @return
      */
-    private static boolean checkWin(char c) {
+    private static boolean signCount(char c, int wins) {
         ArrayList<Boolean> checks = new ArrayList<>();
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
 
                 if (field[i][j] == c) {
                     if (i + winCount <= fieldSizeX) {
-                        checks.add(straightCheck(i, j, c, true));
+                        checks.add(straightCheck(i, j, c, true, wins));
                     }
                     if (j + winCount <= fieldSizeY) {
-                        checks.add(straightCheck(i, j, c, false));
+                        checks.add(straightCheck(i, j, c, false, wins));
                     }
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
-                        checks.add(diagonalCheck(i, j, c, true));
+                        checks.add(diagonalCheck(i, j, c, true, wins));
                     }
                     if (i + winCount <= fieldSizeX && j >= winCount) {
-                        checks.add(diagonalCheck(i, j, c, false));
+                        checks.add(diagonalCheck(i, j, c, false, wins));
                     }
                 }
             }
@@ -234,33 +234,31 @@ public class CrossNull {
         dots.clear();
     }
 
-    private static void tryToBlock(char c) {
+    private static void tryToBlock(char c, int wins) {
         hasMove = false;
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
 
                 if (field[i][j] == c && !hasMove) {
                     if (i + winCount <= fieldSizeX) {
-                        if (straightCheck(i, j, c, true, winCount-2)) {
-                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y);
+                        if (straightCheck(i, j, c, true, wins)) {
+                            blockStep(dots.get(0).x - wins + dots.size(), dots.get(0).y);
                         }
                     }
                     if (j + winCount <= fieldSizeY && !hasMove) {
-                        if (straightCheck(i, j, c, false, winCount-2)) {
-                            System.out.println(i + " " + j);
-                            System.out.println(dots.get(0).x + " " + dots.get(0).y + " " + dots.size());
-                            blockStep(dots.get(0).x, dots.get(0).y + dots.size());
+                        if (straightCheck(i, j, c, false, wins)) {
+                            blockStep(dots.get(0).x, dots.get(0).y - wins + dots.size());
                         }
                     }
 
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY && !hasMove) {
-                        if (diagonalCheck(i, j, c, true, winCount-2)) {
-                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y + dots.size());
+                        if (diagonalCheck(i, j, c, true, wins)) {
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y - wins + dots.size());
                         }
                     }
                     if (i + winCount <= fieldSizeX && j >= winCount && !hasMove) {
-                        if (diagonalCheck(i, j, c, false, winCount-2)) {
-                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y - dots.size());
+                        if (diagonalCheck(i, j, c, false, wins)) {
+                            blockStep(dots.get(0).x - wins + dots.size(), dots.get(0).y + wins - dots.size());
                             {
                             }
                         }
@@ -272,7 +270,8 @@ public class CrossNull {
 
     public static void superAITurn() {
         sAITurn = true;
-        tryToBlock(HUMAN_SIGN);
+        if (signCount(HUMAN_SIGN, winCount - 1)) tryToBlock(HUMAN_SIGN, winCount - 1);
+        else tryToBlock(HUMAN_SIGN, winCount - 2);
         sAITurn = false;
         if (superAIhasMove == 4 || firstAITurn) {
             aiTurn();
@@ -294,9 +293,9 @@ public class CrossNull {
         for (int k = 0; k < wins; k++) {
             if (field[i][j] == c) {
 
-                    dots.add(new IntPair(i, j));
-                    check++;
-                    int i1 = straightDestination ? i++ : j++;
+                dots.add(new IntPair(i, j));
+                check++;
+                int i1 = straightDestination ? i++ : j++;
             }
         }
         return check == wins;
@@ -315,14 +314,14 @@ public class CrossNull {
         int check = 0;
         for (int k = 0; k < wins; k++) {
             if (field[i][j] == c) {
-                    dots.add(new IntPair(i, j));
-                    check++;
-                    if (straightDestination) {
-                        i++;
-                        j++;
-                    } else {
-                        i++;
-                        j--;
+                dots.add(new IntPair(i, j));
+                check++;
+                if (straightDestination) {
+                    i++;
+                    j++;
+                } else {
+                    i++;
+                    j--;
                 }
             }
         }
