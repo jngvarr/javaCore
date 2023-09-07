@@ -20,6 +20,7 @@ public class CrossNull {
     private static ArrayList<IntPair> dots = new ArrayList<>();
     private static int superAIhasMove = 0;
     private static boolean firstAITurn;
+    private static boolean hasMove;
 
 
     public static void main(String[] args) {
@@ -225,43 +226,44 @@ public class CrossNull {
         return checks.contains(true);
     }
 
+    public static void blockStep(int x, int y) {
+        if (isCellEmpty(x, y)) {
+            field[x][y] = AI_SIGN;
+            hasMove = true;
+        } else superAIhasMove++;
+        dots.clear();
+    }
+
     private static void tryToBlock(char c) {
+        hasMove = false;
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
 
-                if (field[i][j] == c) {
+                if (field[i][j] == c && !hasMove) {
                     if (i + winCount <= fieldSizeX) {
-                        if (straightCheck(i, j, c, true)) {
-                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y)) {
-                                field[dots.get(0).x + dots.size()][dots.get(0).y] = AI_SIGN;
-                            }
-                            superAIhasMove++;
-                        } else dots.clear();
+                        if (straightCheck(i, j, c, true, winCount-2)) {
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y);
+                        }
+                    }
+                    if (j + winCount <= fieldSizeY && !hasMove) {
+                        if (straightCheck(i, j, c, false, winCount-2)) {
+                            System.out.println(i + " " + j);
+                            System.out.println(dots.get(0).x + " " + dots.get(0).y + " " + dots.size());
+                            blockStep(dots.get(0).x, dots.get(0).y + dots.size());
+                        }
+                    }
 
+                    if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY && !hasMove) {
+                        if (diagonalCheck(i, j, c, true, winCount-2)) {
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y + dots.size());
+                        }
                     }
-                    if (j + winCount <= fieldSizeY) {
-                        if ((straightCheck(i, j, c, false))) {
-                            if (isCellEmpty(dots.get(0).x, dots.get(0).y + dots.size())) {
-                                field[dots.get(0).x][dots.get(0).y + dots.size()] = AI_SIGN;
+                    if (i + winCount <= fieldSizeX && j >= winCount && !hasMove) {
+                        if (diagonalCheck(i, j, c, false, winCount-2)) {
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y - dots.size());
+                            {
                             }
-                            superAIhasMove++;
-                        } else dots.clear();
-                    }
-                    if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
-                        if ((diagonalCheck(i, j, c, true))) {
-                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y + dots.size())) {
-                                field[dots.get(0).x + dots.size()][dots.get(0).y + dots.size()] = AI_SIGN;
-                            }
-                            superAIhasMove++;
-                        } else dots.clear();
-                    }
-                    if (i + winCount <= fieldSizeX && j >= winCount) {
-                        if ((diagonalCheck(i, j, c, false))) {
-                            if (isCellEmpty(dots.get(0).x + dots.size(), dots.get(0).y - dots.size())) {
-                                field[dots.get(0).x + dots.size()][dots.get(0).y - dots.size()] = AI_SIGN;
-                            }
-                            superAIhasMove++;
-                        } else dots.clear();
+                        }
                     }
                 }
             }
@@ -287,14 +289,14 @@ public class CrossNull {
      * @param straightDestination = true - горизонталь, false - вертикаль
      * @return
      */
-    public static boolean straightCheck(int i, int j, char c, boolean straightDestination) {
-        int wins = sAITurn ? winCount / 2 : winCount;
+    public static boolean straightCheck(int i, int j, char c, boolean straightDestination, int wins) {
         int check = 0;
         for (int k = 0; k < wins; k++) {
             if (field[i][j] == c) {
-                dots.add(new IntPair(i, j));
-                check++;
-                int i1 = straightDestination ? i++ : j++;
+
+                    dots.add(new IntPair(i, j));
+                    check++;
+                    int i1 = straightDestination ? i++ : j++;
             }
         }
         return check == wins;
@@ -309,23 +311,22 @@ public class CrossNull {
      * @param straightDestination - true - левый верх - правый низ, false - левый низ - правый верх
      * @return
      */
-    public static boolean diagonalCheck(int i, int j, char c, boolean straightDestination) {
-        int wins = sAITurn ? winCount / 2 : winCount;
+    public static boolean diagonalCheck(int i, int j, char c, boolean straightDestination, int wins) {
         int check = 0;
-        for (int k = 0; k < winCount; k++) {
+        for (int k = 0; k < wins; k++) {
             if (field[i][j] == c) {
-                dots.add(new IntPair(i, j));
-                check++;
-                if (straightDestination) {
-                    i++;
-                    j++;
-                } else {
-                    i++;
-                    j--;
+                    dots.add(new IntPair(i, j));
+                    check++;
+                    if (straightDestination) {
+                        i++;
+                        j++;
+                    } else {
+                        i++;
+                        j--;
                 }
             }
         }
-        return check == winCount;
+        return check == wins;
     }
 
     /**
