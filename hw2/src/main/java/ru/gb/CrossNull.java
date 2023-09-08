@@ -215,7 +215,7 @@ public class CrossNull {
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
                         checks.add(diagonalCheck(i, j, c, true, wins));
                     }
-                    if (j + winCount <= fieldSizeX && j >= winCount) {
+                    if (j + winCount <= fieldSizeX && j - winCount <= fieldSizeY - winCount) {
                         checks.add(diagonalCheck(i, j, c, false, wins));
                     }
                 }
