@@ -19,7 +19,6 @@ public class CrossNull {
     private static final Random rnd = new Random();
     private static ArrayList<IntPair> dots = new ArrayList<>();
     private static int superAIhasMove = 0;
-    private static boolean firstAITurn;
     private static boolean hasMove;
 
 
@@ -73,7 +72,7 @@ public class CrossNull {
     }
 
     private static void initialize() {
-        firstAITurn = true;
+//        firstAITurn = true;
         field = new char[fieldSizeX][fieldSizeY];
         for (int x = 0; x < fieldSizeX; x++) {
             for (int y = 0; y < fieldSizeY; y++) {
@@ -111,7 +110,7 @@ public class CrossNull {
         do {
 
             while (true) {
-                System.out.print("Введите координату хода X (от 1 до 3): ");
+                System.out.print("Введите координату хода X (от 1 до " + fieldSizeX + "): ");
                 if (sc.hasNextInt()) {
                     x = sc.nextInt() - 1;
                     sc.nextLine();
@@ -123,7 +122,7 @@ public class CrossNull {
             }
 
             while (true) {
-                System.out.print("Введите координату хода Y (от 1 до 3): ");
+                System.out.print("Введите координату хода Y (от 1 до " + fieldSizeY + "): ");
                 if (sc.hasNextInt()) {
                     y = sc.nextInt() - 1;
                     sc.nextLine();
@@ -196,7 +195,7 @@ public class CrossNull {
     }
 
     /**
-     * Проверка победы
+     * Подсчет значков в линии
      *
      * @param c
      * @return
@@ -205,7 +204,7 @@ public class CrossNull {
         ArrayList<Boolean> checks = new ArrayList<>();
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
-
+//                if (checks.contains(true)) return true;
                 if (field[i][j] == c) {
                     if (i + winCount <= fieldSizeX) {
                         checks.add(straightCheck(i, j, c, true, wins));
@@ -216,7 +215,7 @@ public class CrossNull {
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
                         checks.add(diagonalCheck(i, j, c, true, wins));
                     }
-                    if (i + winCount <= fieldSizeX && j >= winCount) {
+                    if (j + winCount <= fieldSizeX && j >= winCount) {
                         checks.add(diagonalCheck(i, j, c, false, wins));
                     }
                 }
@@ -229,38 +228,39 @@ public class CrossNull {
     public static void blockStep(int x, int y) {
         if (isCellEmpty(x, y)) {
             field[x][y] = AI_SIGN;
+        } else if (isCellValid(x - 1, y - 1) && isCellEmpty(x - 1, y - 1)) {
+            field[x - 1 - dots.size()][y - 1 - dots.size()] = AI_SIGN;
+
             hasMove = true;
-        } else superAIhasMove++;
-        dots.clear();
+        }
+//        dots.clear();
     }
 
     private static void tryToBlock(char c, int wins) {
         hasMove = false;
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
-
+                if (hasMove) break;
                 if (field[i][j] == c && !hasMove) {
-                    if (i + winCount <= fieldSizeX) {
-                        if (straightCheck(i, j, c, true, wins)) {
-                            blockStep(dots.get(0).x - wins + dots.size(), dots.get(0).y);
-                        }
+
+                    if (straightCheck(i, j, c, true, wins)) {
+                        blockStep(dots.get(0).x + dots.size(), dots.get(0).y);
+
                     }
-                    if (j + winCount <= fieldSizeY && !hasMove) {
+                    if (!hasMove) {
                         if (straightCheck(i, j, c, false, wins)) {
-                            blockStep(dots.get(0).x, dots.get(0).y - wins + dots.size());
+                            blockStep(dots.get(0).x, dots.get(0).y + dots.size());
                         }
                     }
 
-                    if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY && !hasMove) {
+                    if (!hasMove) {
                         if (diagonalCheck(i, j, c, true, wins)) {
-                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y - wins + dots.size());
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y + dots.size());
                         }
                     }
-                    if (i + winCount <= fieldSizeX && j >= winCount && !hasMove) {
+                    if (!hasMove) {
                         if (diagonalCheck(i, j, c, false, wins)) {
-                            blockStep(dots.get(0).x - wins + dots.size(), dots.get(0).y + wins - dots.size());
-                            {
-                            }
+                            blockStep(dots.get(0).x + dots.size(), dots.get(0).y - dots.size());
                         }
                     }
                 }
@@ -273,9 +273,8 @@ public class CrossNull {
         if (signCount(HUMAN_SIGN, winCount - 1)) tryToBlock(HUMAN_SIGN, winCount - 1);
         else tryToBlock(HUMAN_SIGN, winCount - 2);
         sAITurn = false;
-        if (superAIhasMove == 4 || firstAITurn) {
+        if (!hasMove) {
             aiTurn();
-            firstAITurn = false;
         }
     }
 
@@ -289,10 +288,11 @@ public class CrossNull {
      * @return
      */
     public static boolean straightCheck(int i, int j, char c, boolean straightDestination, int wins) {
+        dots.clear();
         int check = 0;
-        for (int k = 0; k < wins; k++) {
+        int edge = straightDestination ? fieldSizeX - 1 - i : fieldSizeY - 1 - j;
+        for (int k = 0; k < edge; k++) {
             if (field[i][j] == c) {
-
                 dots.add(new IntPair(i, j));
                 check++;
                 int i1 = straightDestination ? i++ : j++;
@@ -311,8 +311,10 @@ public class CrossNull {
      * @return
      */
     public static boolean diagonalCheck(int i, int j, char c, boolean straightDestination, int wins) {
+        dots.clear();
         int check = 0;
-        for (int k = 0; k < wins; k++) {
+        int edge = straightDestination ? fieldSizeX - 1 - i : fieldSizeY - 1 - j;
+        for (int k = 0; k < edge; k++) {
             if (field[i][j] == c) {
                 dots.add(new IntPair(i, j));
                 check++;
