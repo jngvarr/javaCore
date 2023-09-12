@@ -34,8 +34,8 @@ public class CrossNull {
                 printField();
                 if (checkGameState(HUMAN_SIGN, "Вы победили!"))
                     break;
-                superAITurn();
-//                aiTurn();
+                //               superAITurn();
+                aiTurn();
                 printField();
                 if (checkGameState(AI_SIGN, "Победил компьютер!"))
                     break;
@@ -182,7 +182,7 @@ public class CrossNull {
      * @return
      */
     private static boolean checkGameState(char c, String s) {
-        if (signCount(c, winCount)) {
+        if (signCount2(c, winCount)) {
             System.out.println(s);
             return true;
         }
@@ -214,7 +214,7 @@ public class CrossNull {
                     if (i + winCount <= fieldSizeX && j + winCount <= fieldSizeY) {
                         checks.add(diagonalCheck(i, j, c, true, wins));
                     }
-                    if (i + winCount <= fieldSizeX && j - winCount >= 0) {
+                    if (i - winCount <= fieldSizeX && j - winCount >= 0) {
                         checks.add(diagonalCheck(i, j, c, false, wins));
                     }
                 }
@@ -223,6 +223,7 @@ public class CrossNull {
         dots.clear();
         return checks.contains(true);
     }
+
 
     public static void blockStep(int x, int y) {
         if (isCellEmpty(x, y)) {
@@ -273,11 +274,10 @@ public class CrossNull {
     }
 
 
-
     public static void superAITurn() {
         sAITurn = true;
-        if (signCount(HUMAN_SIGN, winCount - 1)) tryToBlock(HUMAN_SIGN, winCount - 1);
-        else tryToBlock(HUMAN_SIGN, winCount - 2);
+        //if (signCount(HUMAN_SIGN, winCount - 1)) tryToBlock(HUMAN_SIGN, winCount - 1);
+        //else tryToBlock(HUMAN_SIGN, winCount - 2);
         sAITurn = false;
         if (!hasMove) {
             aiTurn();
@@ -304,6 +304,31 @@ public class CrossNull {
                 int i1 = straightDestination ? i++ : j++;
             }
         }
+        return check == wins;
+    }
+
+    private static boolean signCount2(char c, int wins) {
+        ArrayList<Boolean> checks = new ArrayList<>();
+        for (int i = 0; i < fieldSizeY; i++) {
+            checks.add(straightCheck2(i, c, true, wins));
+        }
+        for (int i = 0; i < fieldSizeX; i++) {
+            checks.add(straightCheck2(i, c, false, wins));
+        }
+        dots.clear();
+        return checks.contains(true);
+    }
+
+    public static boolean straightCheck2(int i, char c, boolean straightDestination, int wins) {
+        int check = 0;
+        int edge = straightDestination ? fieldSizeX - 1 : fieldSizeY - 1;
+        for (int j = 0; j < edge; ) {
+            if (field[i][j] == c) {
+                check++;
+            }
+            j++;
+        }
+
         return check == wins;
     }
 
