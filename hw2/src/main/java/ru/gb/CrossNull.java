@@ -315,20 +315,53 @@ public class CrossNull {
         for (int i = 0; i < fieldSizeX; i++) {
             checks.add(straightCheck2(i, c, false, wins));
         }
+        for (int i = 0; i < fieldSizeY; i++) {
+            checks.add(diagonalCheck2(i, c, true, wins));
+        }
+        for (int i = 0; i < fieldSizeX; i++) {
+            checks.add(diagonalCheck2(i, c, false, wins));
+        }
         dots.clear();
         return checks.contains(true);
     }
 
     public static boolean straightCheck2(int i, char c, boolean straightDestination, int wins) {
         int check = 0;
-        int edge = straightDestination ? fieldSizeX - 1 : fieldSizeY - 1;
-        for (int j = 0; j < edge; ) {
-            if (field[i][j] == c) {
-                check++;
+        if (straightDestination) {
+            for (int j = 0; j < fieldSizeX - 1; j++) {
+                if (field[j][i] == c) {
+                    check++;
+                }
             }
-            j++;
+        } else {
+            for (int j = 0; j < fieldSizeY - 1; j++) {
+                if (field[i][j] == c) {
+                    check++;
+                }
+            }
         }
+        return check == wins;
+    }
 
+    public static boolean diagonalCheck2(int i, char c, boolean straightDestination, int wins) {
+        int check = 0;
+        if (straightDestination) {
+            for (int j = 0; j < fieldSizeX -1-j; ) {
+                if (field[i][j] == c) {
+                    check++;
+                }
+                i++;
+                j++;
+            }
+        } else {
+            for (int j = 0; j < fieldSizeX -1- j; ) {
+                if (field[i][j] == c) {
+                    check++;
+                }
+                j--;
+                i++;
+            }
+        }
         return check == wins;
     }
 
