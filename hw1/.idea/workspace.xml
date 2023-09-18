@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07161a77-aa2c-418e-8cdf-aec602c4babb" name="Changes" comment="Merge branch 'main' of https://github.com/jngvarr/java into HEAD&#10;&#10;# Conflicts:&#10;#&#9;ToyShop/Toystore/Main.java&#10;#&#9;ToyShop/Toystore/Model.java&#10;#&#9;ToyShop/Toystore/Store.java">
+      <change afterPath="$PROJECT_DIR$/../hw3/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
