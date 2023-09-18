@@ -14,7 +14,7 @@ public class Worker extends Employee{
         return new Worker(
                 surNames[random.nextInt(surNames.length)],
                 names[random.nextInt(surNames.length)],
-                random.nextInt(30000, 250000));
+                random.nextInt( 250000));
     }
 
     public static List<Employee> getEmployees(int count){

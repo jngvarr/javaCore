@@ -11,17 +11,18 @@ public class Program {
     public static void main(String[] args) {
 
         Employee.employees = Worker.getEmployees(15);
+        List<Employee> freelancers = Freelancer.getEmployees(15);
 
-        List<Employee> freelancers = new ArrayList<>();
-        freelancers.add((new Freelancer(surNames[random.nextInt(surNames.length)],
-                names[random.nextInt(surNames.length)])));
-
+        for (Employee freelancer : freelancers) {
+            freelancer.calculateSalary();
+        }
+        employees.addAll(freelancers);
 
         for (Employee employee : employees) {
             System.out.println(employee);
         }
 
-        Collections.sort(employees, new EmployeeNameComparator());
+        Collections.sort(employees, new EmployeeDobComparator());
         System.out.println();
 
         for (Employee employee : employees) {

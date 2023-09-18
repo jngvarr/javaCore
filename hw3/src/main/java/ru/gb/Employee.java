@@ -1,5 +1,6 @@
 package ru.gb;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +11,7 @@ public abstract class Employee implements Comparable<Employee> {
 
     /**
      * Расчет среднемесячной заработной платы
+     *
      * @return
      */
     public abstract double calculateSalary();
@@ -40,17 +42,17 @@ public abstract class Employee implements Comparable<Employee> {
         id = ++counter;
     }
 
-    private Employee(){
+    private Employee() {
         this("#Surnane#", "#Name#");
     }
 
-    Employee(String surName, String name){
+    Employee(String surName, String name) {
         this(surName, name, 500);
     }
 
-    protected Employee(String surName, String name, double salary){
+    protected Employee(String surName, String name, double salary) {
         //System.out.println("Constructor - Employee");
-        if (salary < 500){
+        if (salary < 500) {
             throw new RuntimeException("Ставка заработной платы должна быть не менее 500");
         }
         this.surName = surName;
@@ -79,7 +81,7 @@ public abstract class Employee implements Comparable<Employee> {
     }
 
     public void setSalary(double salary) {
-        if (salary < 30000){
+        if (salary < 30000) {
             throw new RuntimeException("Уровень заработной платы должен быть не менее 30000");
         }
         this.salary = salary;
@@ -110,13 +112,13 @@ public abstract class Employee implements Comparable<Employee> {
 
     //region Static Fields
 
-    protected static String[] names = new String[] { "Анатолий", "Глеб", "Клим", "Мартин", "Лазарь", "Владлен", "Клим", "Панкратий", "Рубен", "Герман" };
-    protected static String[] surNames = new String[] { "Григорьев", "Фокин", "Шестаков", "Хохлов", "Шубин", "Бирюков", "Копылов", "Горбунов", "Лыткин", "Соколов" };
+    protected static String[] names = new String[]{"Анатолий", "Глеб", "Клим", "Мартин", "Лазарь", "Владлен", "Клим", "Панкратий", "Рубен", "Герман"};
+    protected static String[] surNames = new String[]{"Григорьев", "Фокин", "Шестаков", "Хохлов", "Шубин", "Бирюков", "Копылов", "Горбунов", "Лыткин", "Соколов"};
     protected static Random random = new Random();
     private static int counter = 1000;
 
     protected static List<Employee> employees = new ArrayList<>();
-
+    protected static SimpleDateFormat dob;
     //endregion
 
 }

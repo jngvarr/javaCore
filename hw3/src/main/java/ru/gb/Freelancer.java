@@ -7,12 +7,10 @@ import java.util.List;
  * TODO: Доработать в рамках домашней работы
  */
 public class Freelancer extends Employee {
-    public static int dailyRate;
 
     @Override
     public double calculateSalary() {
-        salary = dailyRate * 8 * 20.8;
-        return salary;
+        return random.nextInt(2000) * 8 * 20.8;
     }
     public static List<Employee> getEmployees(int count){
         List<Employee> employees = new ArrayList<>();
@@ -21,8 +19,19 @@ public class Freelancer extends Employee {
         return employees;
     }
 
+    public static Employee getInstance(){
+        return new Freelancer(
+                surNames[random.nextInt(surNames.length)],
+                names[random.nextInt(surNames.length)]);
+    }
     protected Freelancer(String surName, String name) {
         super(surName, name);
+        this.salary = calculateSalary();
 
+    }
+    @Override
+    public String toString() {
+        return String.format("%s %s; Фрилансер; Среднемесячная заработная плата (почасовая оплата): %.2f (руб.)",
+                surName, name, salary);
     }
 }

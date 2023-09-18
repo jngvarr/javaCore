@@ -1,7 +1,7 @@
 package ru.gb;
 import java.util.Comparator;
 
-public class EmployeeNameComparator implements Comparator<Employee> {
+public class EmployeeDobComparator implements Comparator<Employee> {
     @Override
     public int compare(Employee o1, Employee o2) {
         int res = o1.getSurName().compareTo(o2.getSurName());
