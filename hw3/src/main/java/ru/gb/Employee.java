@@ -44,7 +44,7 @@ public abstract class Employee implements Comparable<Employee> {
         this("#Surnane#", "#Name#");
     }
 
-    private Employee(String surName, String name){
+    Employee(String surName, String name){
         this(surName, name, 500);
     }
 

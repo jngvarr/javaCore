@@ -1,5 +1,6 @@
 package ru.gb;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,19 +12,19 @@ public class Program {
 
         Employee.employees = Worker.getEmployees(15);
 
-        Employee.employees.add(new Freelancer(surNames[random.nextInt(surNames.length)],
-                names[random.nextInt(surNames.length)],calculateSalary()));
+        List<Employee> freelancers = new ArrayList<>();
+        freelancers.add((new Freelancer(surNames[random.nextInt(surNames.length)],
+                names[random.nextInt(surNames.length)])));
 
 
-
-        for (Employee employee: employees) {
+        for (Employee employee : employees) {
             System.out.println(employee);
         }
 
         Collections.sort(employees, new EmployeeNameComparator());
         System.out.println();
 
-        for (Employee employee: employees) {
+        for (Employee employee : employees) {
             System.out.println(employee);
         }
 
