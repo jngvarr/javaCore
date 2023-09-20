@@ -2,7 +2,7 @@ package ru.gb.view;
 
 import java.util.Scanner;
 
-public class Console {
+public class ConsoleQuery {
     Scanner sc = new Scanner(System.in);
 
     public String consoleQuery() {

@@ -1,7 +1,9 @@
 package ru.gb;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -86,6 +88,9 @@ public abstract class Employee implements Comparable<Employee> {
         }
         this.salary = salary;
     }
+    public LocalDate getDob() {
+        return dob;
+    }
 
     //endregion
 
@@ -118,7 +123,7 @@ public abstract class Employee implements Comparable<Employee> {
     private static int counter = 1000;
 
     protected static List<Employee> employees = new ArrayList<>();
-    protected static SimpleDateFormat dob;
+    private static LocalDate dob;
     //endregion
 
 }
