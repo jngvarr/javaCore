@@ -12,37 +12,44 @@ public class Tree {
 
     /**
      * TODO: Доработать метод print, необходимо распечатывать директории и файлы
+     *
      * @param file
      * @param indent
      * @param isLast
      */
-    public static void print(File file, String indent, boolean isLast){
+    public static void print(File file, String indent, boolean isLast) {
         System.out.print(indent);
-        if (isLast){
+        if (isLast) {
             System.out.print("└─");
             indent += "  ";
-        }
-        else{
+        } else {
             System.out.print("├─");
             indent += "│ ";
         }
         System.out.println(file.getName());
 
+
         File[] files = file.listFiles();
         if (files == null)
             return;
 
+        int filesTotal = 0;
         int subDirTotal = 0;
-        for (int i = 0; i < files.length; i++){
-            if (files[i].isDirectory())
+        for (File value : files) {
+            if (value.isDirectory()) {
                 subDirTotal++;
+            } else filesTotal++;
         }
 
+        int filesCounter = 0;
         int subDirCounter = 0;
-        for (int i = 0; i < files.length; i++){
-            if (files[i].isDirectory()){
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()) {
                 subDirCounter++;
-                print(files[i], indent, subDirCounter == subDirTotal);
+                print(files[i], indent, subDirCounter == subDirTotal && filesCounter == filesTotal);
+            } else {
+                filesCounter++;
+                print(files[i], indent, filesTotal == filesCounter && subDirCounter == subDirTotal);
             }
         }
 
